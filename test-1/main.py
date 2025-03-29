@@ -2,6 +2,7 @@ import os
 from urllib.parse import urljoin
 import requests
 from bs4 import BeautifulSoup
+import zipfile
 
 
 class ANSScraper:
@@ -21,27 +22,53 @@ class ANSScraper:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
+    def compress_files(self, filepaths, output_filename="anexos.zip"):
+        """
+        Compacta os arquivos baixados em um único arquivo ZIP
+
+        :param filepaths: Lista de caminhos dos arquivos a serem compactados
+        :param output_filename: Nome do arquivo ZIP de saída
+        :return: Caminho do arquivo ZIP gerado
+        """
+        output_path = os.path.join(self.output_dir, output_filename)
+        
+        if os.path.exists(output_path):
+            print(f"Atenção: O arquivo {output_path} já existe e será sobrescrito.")
+        
+        print(f"Compactando {len(filepaths)} arquivos em {output_path}")
+        
+        with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for filepath in filepaths:
+                zipf.write(filepath, os.path.basename(filepath))
+                print(f"Arquivo {filepath} adicionado ao ZIP")
+        
+        print(f"Compactação concluída: {output_path}")
+
+        return output_path
+
     def download_file(self, url):
         """
         Faz o download de um arquivo e o salva no diretório especificado
 
         :param url: URL do arquivo a ser baixado
-        :param filename: Nome do arquivo para salvar
+        :return: Caminho do arquivo salvo
         """
-
-        content = self.get_page_content(url)
         filename = os.path.basename(url)
         file_path = os.path.join(self.output_dir, filename)
 
         # Verifica se o arquivo já existe
         if os.path.exists(file_path):
             print(f"Arquivo {filename} já existe. Pulando download.")
-            return
+            return file_path
+
+        content = self.get_page_content(url)
 
         with open(file_path, 'wb') as file:
             file.write(content)
 
         print(f"Arquivo {filename} baixado com sucesso.")
+
+        return file_path
 
 
     def find_pdf_links(self, content):
@@ -66,21 +93,21 @@ class ANSScraper:
             
         if not pdf_links:
             print("Nenhum link encontrado para os anexos: " + ", ".join(target_names))
-            return None
+            return []
 
         return pdf_links
 
     
-    def get_page_content(self, url):
+    def get_page_content(self, url, timeout=10):
         """
         Faz o download do conteúdo da página
 
         :param url: URL da página a ser baixada
-        :param retry_count: Contador de tentativas
+        :param timeout: Tempo limite para a requisição
         :return: Conteúdo da página
         """
         try:
-            response = self.session.get(url, timeout=10)
+            response = self.session.get(url, timeout=timeout)
             response.raise_for_status()
 
             return response.content
@@ -96,15 +123,23 @@ class ANSScraper:
             content = self.get_page_content(self.base_url)
             pdf_links = self.find_pdf_links(content)
 
-            
+            if not pdf_links:
+                print("Nenhum PDF correspondente encontrado. Processo encerrado.")
+                return
+
+            downloaded_files = []
+
             for name, pdf_url in pdf_links:
                 print(f"Baixando {name} de {pdf_url}")
-                self.download_file(pdf_url)
+                downloaded_files.append(self.download_file(pdf_url))
 
-            
+            if downloaded_files:
+                print("Compactando arquivos baixados...")
+                self.compress_files(downloaded_files)
+                print("Processo concluído com sucesso.")
         except Exception as e:
             print(f"Erro durante o processo: {e}")
-            return None
+            raise
 
 if __name__ == "__main__":
     base_url = "https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos"
@@ -112,4 +147,3 @@ if __name__ == "__main__":
     
     scraper = ANSScraper(base_url, target_names)
     result = scraper.run()
-    
