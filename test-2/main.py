@@ -2,7 +2,17 @@ import os
 import zipfile
 import pandas as pd
 import pdfplumber
+import logging
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("data-transform.log"),
+        logging.StreamHandler()
+    ]
+)
 
 class ANSDataTransformer:
     def __init__(self, input_pdf_path: str, output_dir: str = "output", output_filename: str = "candidato"):
@@ -21,7 +31,7 @@ class ANSDataTransformer:
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
-        print(f"Diretório de saída definido: {output_dir}")
+        logging.info(f"[Configuração] Diretório de saída definido para: {output_dir}")
 
     def save_to_csv(self, df: pd.DataFrame) -> str:
         """
@@ -32,10 +42,10 @@ class ANSDataTransformer:
         try:
             csv_path = os.path.join(self.output_dir, f"{self.output_filename}.csv")
             df.to_csv(csv_path, index=False, encoding='utf-8')
-            print(f"Arquivo CSV salvo em: {csv_path}")
+            logging.info(f"[CSV] Arquivo CSV salvo com sucesso em: {csv_path}")
             return csv_path
         except Exception as e:
-            print(f"Erro ao salvar o arquivo CSV")
+            logging.error(f"[CSV] Falha ao salvar o arquivo CSV. Detalhes: {e}")
             raise
 
     def compress_to_zip(self, file_path: str) -> str:
@@ -48,10 +58,10 @@ class ANSDataTransformer:
             zip_path = os.path.join(self.output_dir, f"{self.output_filename}.zip")
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 zipf.write(file_path, os.path.basename(file_path))
-            print(f"Arquivo compactado em: {zip_path}")
+            logging.info(f"[Compressão] Arquivo compactado com sucesso em: {zip_path}")
             return zip_path
         except Exception as e:
-            print(f"Erro ao compactar o arquivo: {e}")
+            logging.error(f"[Compressão] Falha ao compactar o arquivo. Detalhes: {e}")
             raise
 
     def extract_tables_from_pdf(self) -> pd.DataFrame:
@@ -60,7 +70,7 @@ class ANSDataTransformer:
         :return: DataFrame contendo todas as tabelas extraídas.
         """
         try:
-            print(f"Extraindo tabelas do PDF: {self.input_pdf_path}")
+            logging.info(f"[Extração] Iniciando extração de tabelas do PDF: {self.input_pdf_path}")
             all_tables = []
 
             with pdfplumber.open(self.input_pdf_path) as pdf:
@@ -70,20 +80,20 @@ class ANSDataTransformer:
                     if table:
                         df = pd.DataFrame(table[1:], columns=table[0])
                         all_tables.append(df)
-                        print(f"Tabela extraída da página {page_number}")
+                        logging.info(f"[Extração] Tabela extraída com sucesso da página {page_number}")
                     else:
-                        print(f"Nenhuma tabela encontrada na página {page_number}")
+                        logging.warning(f"[Extração] Nenhuma tabela encontrada na página {page_number}")
 
             if all_tables:
                 combined_df = pd.concat(all_tables, ignore_index=True)
-                print("Todas as tabelas foram extraídas e combinadas com sucesso.")
+                logging.info("[Extração] Todas as tabelas foram extraídas e combinadas em um único DataFrame.")
                 return combined_df
             else:
-                print("Nenhuma tabela foi encontrada no PDF.")
+                logging.warning("[Extração] Nenhuma tabela foi encontrada no PDF.")
                 return pd.DataFrame()
 
         except Exception as e:
-            print(f"Erro ao extrair tabelas do PDF")
+            logging.error(f"[Extração] Erro ao extrair tabelas do PDF. Detalhes: {e}")
             raise
 
     def run(self) -> str:
@@ -92,18 +102,20 @@ class ANSDataTransformer:
         :return: Caminho do arquivo ZIP criado.
         """
         try:
+            logging.info("[Execução] Processo iniciado: Extração, transformação e compactação de dados.")
             df = self.extract_tables_from_pdf()
             if df.empty:
-                raise ValueError("Nenhuma tabela foi extraída do PDF.")
+                raise ValueError("No tables were extracted from the PDF.")
             
             csv_path = self.save_to_csv(df)
 
             zip_path = self.compress_to_zip(csv_path)
 
-            print(f"Processo concluído com sucesso. Arquivo ZIP disponível em: {zip_path}")
+            logging.info(f"[Execução] Processo concluído com sucesso. Arquivo ZIP disponível em: {zip_path}")
+            return zip_path
 
         except Exception as e:
-            print(f"Erro durante o processo")
+            logging.error(f"[Execução] Processo falhou. Detalhes: {e}")
             raise
 
 if __name__ == "__main__":
