@@ -1,0 +1,129 @@
+{
+  "info": {
+    "name": "Healthcare Operators API",
+    "description": "Collection for testing Healthcare Operators Search API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Load CSV Data",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/operators/load-data/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "operators", "load-data"]
+        },
+        "description": "Load data from CSV file into the database"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Operators - By Name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/operators/search/?q=UNIMED",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "operators", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "UNIMED"
+            }
+          ]
+        },
+        "description": "Search operators by name"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Operators - By City",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/operators/search/?q=São Paulo",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "operators", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "São Paulo"
+            }
+          ]
+        },
+        "description": "Search operators by city"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Operators - By Registration Number",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/operators/search/?q=41771",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "operators", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "41771"
+            }
+          ]
+        },
+        "description": "Search operators by ANS registration number"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Operators - By Modality",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/operators/search/?q=Cooperativa Médica",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "operators", "search"],
+          "query": [
+            {
+              "key": "q",
+              "value": "Cooperativa Médica"
+            }
+          ]
+        },
+        "description": "Search operators by modality"
+      },
+      "response": []
+    },
+    {
+      "name": "Search Operators - Empty Query",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/operators/search/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "operators", "search"]
+        },
+        "description": "Test API behavior with empty query parameter"
+      },
+      "response": []
+    }
+  ]
+}
