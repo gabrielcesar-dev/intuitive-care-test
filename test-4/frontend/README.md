@@ -9,6 +9,13 @@ Antes de começar, certifique-se de ter as seguintes ferramentas instaladas em s
 - **Node.js** (versão 18 ou superior)
 - **pnpm** (gerenciador de pacotes)
 
+### Instalando o pnpm
+
+Caso o **pnpm** não esteja instalado, você pode instalá-lo globalmente utilizando o seguinte comando:
+```bash
+npm install -g pnpm
+```
+
 ## Instalação
 
 1. Acesse o diretório do projeto:
@@ -17,26 +24,15 @@ Antes de começar, certifique-se de ter as seguintes ferramentas instaladas em s
    ```
 
 2. Instale as dependências:
-   - Usando **pnpm**:
-     ```bash
-     pnpm install
-     ```
-   - Usando **npm**:
-     ```bash
-     npm install
-     ```
+   ```bash
+   pnpm install
+   ```
 
 ## Scripts Disponíveis
 
-- Usando **pnpm**:
-  - `pnpm dev`: Inicia o servidor de desenvolvimento.
-  - `pnpm build`: Compila o projeto para produção.
-  - `pnpm preview`: Visualiza a aplicação compilada.
-
-- Usando **npm**:
-  - `npm run dev`: Inicia o servidor de desenvolvimento.
-  - `npm run build`: Compila o projeto para produção.
-  - `npm run preview`: Visualiza a aplicação compilada.
+- `pnpm dev`: Inicia o servidor de desenvolvimento.
+- `pnpm build`: Compila o projeto para produção.
+- `pnpm preview`: Visualiza a aplicação compilada.
 
 ## Estrutura do Projeto
 
