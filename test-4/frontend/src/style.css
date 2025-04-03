@@ -1,7 +1,5 @@
-/* Add Bootstrap icons */
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
 
-/* Custom spacing */
 .mb-4 {
   margin-bottom: 1.5rem;
 }
@@ -10,7 +8,6 @@
   margin-bottom: 1rem;
 }
 
-/* Improved table styles */
 .table {
   font-size: 0.9rem;
 }
@@ -22,7 +19,6 @@
   z-index: 1;
 }
 
-/* Responsive improvements */
 @media (max-width: 768px) {
   .table-responsive {
     max-height: 70vh;
@@ -30,7 +26,6 @@
   }
 }
 
-/* Hover effects */
 .btn-outline-secondary:hover {
   background-color: #6c757d;
   color: white;
