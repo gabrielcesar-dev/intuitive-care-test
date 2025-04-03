@@ -82,30 +82,41 @@ test-3/
 
 ### Passos
 
-1. Certifique-se de que o PostgreSQL está instalado e em execução no seu sistema.
-2. Crie um banco de dados para o projeto:
+1. **Logar no PostgreSQL**:
+   - Faça login no PostgreSQL como um usuário com permissões (geralmente `postgres`):
+     ```bash
+     sudo -u postgres psql
+     ```
 
-   ```sql
-   CREATE DATABASE intuitive_care;
-   ```
+2. **Criar o Banco de Dados**:
+   - Dentro do prompt do `psql`, crie o banco de dados:
+     ```sql
+     CREATE DATABASE intuitive_care;
+     ```
 
-3. Execute o script `schema.sql` para criar as tabelas e índices:
+3. **Sair do Prompt**:
+   - Saia do prompt do `psql` digitando:
+     ```bash
+     \q
+     ```
 
-   ```bash
-   psql -d intuitive_care -f schema.sql
-   ```
+4. **Criar Estrutura de Tabelas**:
+   - Execute o script `schema.sql` para criar as tabelas e índices:
+     ```bash
+     psql -d intuitive_care -f schema.sql
+     ```
 
-4. Importe os dados utilizando o script `import.sql`:
+5. **Importar os Dados**:
+   - Importe os dados utilizando o script `import.sql`:
+     ```bash
+     psql -d intuitive_care -f import.sql
+     ```
 
-   ```bash
-   psql -d intuitive_care -f import.sql
-   ```
-
-5. Execute as consultas analíticas utilizando o script `queries.sql`:
-
-   ```bash
-   psql -d intuitive_care -f queries.sql
-   ```
+6. **Executar Consultas Analíticas**:
+   - Execute as consultas analíticas utilizando o script `queries.sql`:
+     ```bash
+     psql -d intuitive_care -f queries.sql
+     ```
 
 ---
 
